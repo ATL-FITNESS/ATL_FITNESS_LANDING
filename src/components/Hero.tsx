@@ -31,7 +31,7 @@ const Hero = () => {
             </Button>
           </Link>
           <Link to="/contact">
-            <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-base border-white text-white hover:bg-white/10">
+            <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-base  text-gray-800 hover:bg-white/65">
               Contact Us
             </Button>
           </Link>
