@@ -1,7 +1,11 @@
 {
   "framework": "vite",
-  "buildCommand": "yarn build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "yarn install --ignore-optional",
-  "devCommand": "yarn dev"
+  "installCommand": "npm install --omit=optional --no-optional",
+  "devCommand": "npm run dev",
+  "env": {
+    "NPM_CONFIG_OPTIONAL": "false",
+    "NPM_CONFIG_OMIT": "optional"
+  }
 }
