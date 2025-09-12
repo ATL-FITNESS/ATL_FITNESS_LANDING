@@ -1,46 +1,84 @@
-
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
 import TextType from './ui/TextType';
 
+// Supabase client setup
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    storageKey: 'atl-fitness-auth',
+    storage: window.localStorage
+  }
+});
+
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Detect dashboard routes (starting with /dashboard, /app, or /member)
+  const isDashboard = /^\/(dashboard|app|member)/.test(location.pathname);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    } else {
+      navigate('/login');
+    }
+  };
+
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
+    { name: 'Packages', href: '/packages' },
+    { name: 'Team', href: '/team' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
   return (
-    <header 
-      className="fixed w-full z-30 bg-gray-200/90 backdrop-blur-3xl shadow-sm transition-all duration-300"
-    >
-      <div className="container mx-auto py-2 md:py-4">
-        <div className="flex items-center justify-between">
+    <header className={`w-full fixed top-0 z-50 ${isDashboard ? 'bg-white shadow-sm' : 'bg-white/75 backdrop-blur-sm shadow-lg'}`}>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`flex items-center justify-between ${isDashboard ? 'h-16' : 'h-20'}`}>
+          {/* Logo - Always visible */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+            <Link 
+              to="/" 
+              className="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded"
+              aria-label="ATL Fitness home"
+            >
               <img 
-                src="/public/lovable-uploads/1104d1e0-24f1-4ef4-b2dc-e75de2c093e5.png" 
+                src="/lovable-uploads/atl-logo.png" 
                 alt="ATL Fitness Logo" 
-                className="h-12 w-14 md:h-24 md:w-28" 
+                className="h-16 w-24"
               />
-              <span className="sr-only">ATL Fitness</span>
+              
             </Link>
             <TextType 
-              className='text-lg md:text-4xl font-bold text-gray-700 ml-1 md:ml-1.5'
+              className='text-lg text-font-primary md:text-2xl font-bold text-gray-700 ml-1 md:ml-1.5'
               text={["ATL GYM & FITNESS CENTER"]}
               typingSpeed={65}
               pauseDuration={1500}
@@ -49,47 +87,136 @@ const Navbar = () => {
             />
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-balance font-medium hover:text-primary transition-colors">Home</Link>
-            <Link to="/about" className="text-balance font-medium hover:text-primary transition-colors">About</Link>
-            <Link to="/packages" className="text-balance font-medium hover:text-primary transition-colors">Packages</Link>
-            <Link to="/team" className="text-balance font-medium hover:text-primary transition-colors">Team</Link>
-            <Link to="/contact" className="text-balance font-medium hover:text-primary transition-colors">Contact</Link>
-            <Link to="/login">
-              <Button variant="outline" className="ml-4 hover:bg-primary hover:text-white hover:border-primary/80">
-                LOGIN
-              </Button>
-            </Link>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-gray-700 hover:text-primary transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <nav className="md:hidden pt-4 pb-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
-              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-              <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>About</Link>
-              <Link to="/packages" className="text-sm font-medium hover:text-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Packages</Link>
-              <Link to="/team" className="text-sm font-medium hover:text-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Team</Link>
-              <Link to="/contact" className="text-sm font-medium hover:text-primary transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full  hover:bg-primary hover:text-white hover:border-primary/80">
-                  LOGIN
+          {/* Conditional Content */}
+          {isDashboard ? (
+            /* Dashboard: Only show Sign Out if authenticated, nothing if not authenticated */
+            <div className="flex items-center">
+              {isAuthenticated && (
+                <Button 
+                  onClick={handleSignOut} 
+                  variant="outline" 
+                  size="sm"
+                  className="focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  aria-label="Sign out of your account"
+                >
+                  <LogOut className="h-4 w-4 mr-2" aria-hidden="true" />
+                  Sign Out
                 </Button>
-              </Link>
+              )}
             </div>
-          </nav>
-        )}
-      </div>
+          ) : (
+            /* Home/Other Pages: Show full navigation */
+            <>
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
+                {navItems.map((item) => {
+                  const isActive = location.pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`text-gray-700 hover:text-primary transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded px-2 py-1 ${
+                        isActive ? 'text-primary underline decoration-2' : ''
+                      }`}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
+                
+                {/* Auth Button */}
+                {isAuthenticated ? (
+                  <Link to="/dashboard">
+                    <Button 
+                      variant="outline"
+                      className="focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      aria-label="Go to dashboard"
+                    >
+                      Dashboard
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button 
+                      className="bg-primary hover:bg-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      aria-label="Sign in to your account"
+                    >
+                      LOGIN
+                    </Button>
+                  </Link>
+                )}
+              </div>
+
+              {/* Mobile menu button */}
+              <div className="md:hidden flex items-center">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200 p-2 rounded"
+                  aria-expanded={isOpen}
+                  aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                >
+                  {isOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Mobile Navigation Menu - Only show when not on dashboard */}
+      {!isDashboard && (
+        <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.href;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`block px-3 py-2 text-gray-700 hover:text-primary transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded ${
+                    isActive ? 'text-primary bg-primary/5' : ''
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+            
+            {/* Mobile Auth Button */}
+            <div className="px-3 py-2">
+              {isAuthenticated ? (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Button 
+                    variant="outline" 
+                    className="w-full focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    aria-label="Go to dashboard"
+                  >
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Button 
+                    className="w-full bg-primary hover:bg-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                    aria-label="Sign in to your account"
+                  >
+                    LOGIN
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

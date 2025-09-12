@@ -1,22 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
 
-// Supabase client setup
+// Supabase client setup with persistence
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    storageKey: 'atl-fitness-auth',
+    storage: window.localStorage
+  }
+});
 
 const AuthCallback = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'error' | 'success'>('loading');
   const [message, setMessage] = useState('Processing your login...');
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Handle the auth callback
+        // Check if there are auth parameters in the URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        
+        console.log('Auth callback params:', { accessToken: !!accessToken, refreshToken: !!refreshToken });
+
+        if (accessToken) {
+          // Set the session using the tokens from the URL
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || ''
+          });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            setStatus('error');
+            setMessage('Failed to establish session. Please try again.');
+            setTimeout(() => navigate('/login'), 3000);
+            return;
+          }
+
+          if (data.session) {
+            console.log('Session established successfully:', data.session.user.email);
+            setStatus('success');
+            setMessage('Login successful! Redirecting to your dashboard...');
+            setTimeout(() => navigate('/dashboard'), 1500);
+            return;
+          }
+        }
+
+        // Fallback: try to get existing session
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -28,52 +66,11 @@ const AuthCallback = () => {
         }
 
         if (data.session) {
-          // User is authenticated, check if they're a gym member
-          const userEmail = data.session.user.email;
-          
-          if (!userEmail) {
-            setStatus('error');
-            setMessage('No email found. Please try again.');
-            setTimeout(() => navigate('/login'), 3000);
-            return;
-          }
-
-          try {
-            // Check if user is a gym member
-            // Replace 'members' with your actual members table name
-            const { data: memberData, error: memberError } = await supabase
-              .from('members')
-              .select('id, name, email')
-              .eq('email', userEmail)
-              .single();
-
-            if (memberError || !memberData) {
-              // User exists in auth but not in members table
-              setStatus('error');
-              setMessage('You are not registered as a gym member. Please contact the gym administrator.');
-              
-              // Sign out the user since they shouldn't have access
-              await supabase.auth.signOut();
-              
-              setTimeout(() => navigate('/login?error=not-a-member'), 3000);
-              return;
-            }
-
-            // User is a valid gym member
-            setStatus('success');
-            setMessage('Login successful! Redirecting to your dashboard...');
-            setTimeout(() => navigate('/dashboard'), 2000);
-
-          } catch (err) {
-            console.error('Error checking member status:', err);
-            // If there's an error checking member status, assume they're valid and proceed
-            // You might want to change this behavior based on your security requirements
-            setStatus('success');
-            setMessage('Login successful! Redirecting to your dashboard...');
-            setTimeout(() => navigate('/dashboard'), 2000);
-          }
+          console.log('Existing session found:', data.session.user.email);
+          setStatus('success');
+          setMessage('Login successful! Redirecting to your dashboard...');
+          setTimeout(() => navigate('/dashboard'), 1500);
         } else {
-          // No session found
           setStatus('error');
           setMessage('No valid session found. Please try logging in again.');
           setTimeout(() => navigate('/login'), 3000);
@@ -87,7 +84,7 @@ const AuthCallback = () => {
     };
 
     handleAuthCallback();
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
