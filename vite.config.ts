@@ -19,4 +19,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      // Ensure cross-platform compatibility
+      external: (id) => {
+        return id.includes('@rollup/rollup-win32');
+      }
+    }
+  }
 }));
