@@ -6,10 +6,9 @@ interface TestimonialProps {
   quote: string;
   name: string;
   role: string;
-  image: string;
 }
 
-const TestimonialCard = ({ quote, name, role, image }: TestimonialProps) => (
+const TestimonialCard = ({ quote, name, role }: TestimonialProps) => (
   <Card className="rounded-2xl shadow-md bg-white hover-scale">
     <CardContent className="pt-6">
       <div className="mb-4">
@@ -18,16 +17,9 @@ const TestimonialCard = ({ quote, name, role, image }: TestimonialProps) => (
         </svg>
       </div>
       <p className="text-gray-600 mb-6">{quote}</p>
-      <div className="flex items-center">
-        <img 
-          src={image} 
-          alt={name} 
-          className="h-10 w-10 rounded-full object-cover mr-3"
-        />
-        <div>
-          <h4 className="font-medium">{name}</h4>
-          <p className="text-gray-500 text-sm">{role}</p>
-        </div>
+      <div>
+        <h4 className="font-medium">{name}</h4>
+        <p className="text-gray-500 text-sm">{role}</p>
       </div>
     </CardContent>
   </Card>
@@ -37,21 +29,18 @@ const TestimonialsSection = () => {
   const testimonials = [
     {
       quote: "The facilities at ATL Fitness are exceptional, but what truly sets them apart is the attention to detail and personalized service. My fitness journey has transformed since joining.",
-      name: "Emma Thompson",
+      name: "Betelhem Tesfaye",
       role: "Premium Member",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961"
     },
     {
       quote: "As a busy executive, I appreciate the efficient workouts designed by the trainers here. The ambiance provides the perfect balance of motivation and luxury.",
-      name: "Michael Chen",
+      name: "Nahom Bekele",
       role: "Elite Member",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974"
     },
     {
       quote: "The nutrition guidance alongside personal training has completely changed my approach to fitness. The results speak for themselves - I've never felt better.",
-      name: "Sophia Rodriguez",
+      name: "Hiwot Alemayehu",
       role: "Premium Member",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976"
     }
   ];
 
