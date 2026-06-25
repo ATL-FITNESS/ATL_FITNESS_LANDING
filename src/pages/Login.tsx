@@ -6,19 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Mail, ArrowLeft } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
-
-// Supabase client setup with persistence
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    storageKey: 'atl-fitness-auth',
-    storage: window.localStorage
-  }
-});
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +19,11 @@ const Login = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setCheckingSession(false);
+      return;
+    }
+
     // Check if user is already logged in
     const checkExistingSession = async () => {
       try {
@@ -91,7 +85,7 @@ const Login = () => {
       setSuccess(false);
 
       // Check if Supabase is configured
-      if (!supabaseUrl || !supabaseAnonKey) {
+      if (!isSupabaseConfigured) {
         throw new Error('Authentication service is not configured');
       }
 

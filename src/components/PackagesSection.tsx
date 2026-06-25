@@ -10,12 +10,7 @@ import {
   CardTitle 
 } from '@/components/ui/card';
 import { Check, Loader2 } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase client setup - you'll need to add these environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 // Database types
 type DurationUnit = 'day' | 'week' | 'month' | 'year'
@@ -123,7 +118,7 @@ const PackagesSection = () => {
         setLoading(true);
         setError(null);
         
-        if (!supabaseUrl || !supabaseAnonKey) {
+        if (!isSupabaseConfigured) {
           throw new Error('Supabase configuration is missing. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment variables.');
         }
 

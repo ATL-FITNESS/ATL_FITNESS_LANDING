@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
-
-// Supabase client setup with persistence
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    storageKey: 'atl-fitness-auth',
-    storage: window.localStorage
-  }
-});
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -22,6 +11,13 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
+      if (!isSupabaseConfigured) {
+        setStatus('error');
+        setMessage('Authentication service is not configured.');
+        setTimeout(() => navigate('/login'), 3000);
+        return;
+      }
+
       try {
         // Check if there are auth parameters in the URL
         const hashParams = new URLSearchParams(window.location.hash.substring(1));

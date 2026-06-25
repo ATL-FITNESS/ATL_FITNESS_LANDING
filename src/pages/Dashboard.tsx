@@ -10,18 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar as CalendarIcon, User, QrCode, Clock, CheckCheck, Loader2, LogOut, XCircle } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase client setup with persistence
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    storageKey: 'atl-fitness-auth',
-    storage: window.localStorage
-  }
-});
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 interface UserData {
   user_id: string;
@@ -66,6 +55,12 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      setError('Authentication service is not configured.');
+      return;
+    }
+
     let mounted = true;
     let hasInitialized = false;
 

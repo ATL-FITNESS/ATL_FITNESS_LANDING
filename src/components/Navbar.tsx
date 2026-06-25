@@ -2,19 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@supabase/supabase-js';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import TextType from './ui/TextType';
-
-// Supabase client setup
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    storageKey: 'atl-fitness-auth',
-    storage: window.localStorage
-  }
-});
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +15,11 @@ const Navbar = () => {
   const isDashboard = /^\/(dashboard|app|member)/.test(location.pathname);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setIsAuthenticated(false);
+      return;
+    }
+
     // Check if user is authenticated
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
