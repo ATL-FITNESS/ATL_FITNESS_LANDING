@@ -107,7 +107,11 @@ const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
   );
 };
 
-const PackagesSection = () => {
+interface PackagesSectionProps {
+  showHeader?: boolean;
+}
+
+const PackagesSection = ({ showHeader = true }: PackagesSectionProps) => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -148,14 +152,16 @@ const PackagesSection = () => {
     return (
       <section className="py-20 bg-gray-50" id="packages">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
-              Membership <span className="text-primary">Packages</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Choose the perfect membership package to match your fitness goals and lifestyle preferences.
-            </p>
-          </div>
+          {showHeader && (
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
+                Membership <span className="text-primary">Packages</span>
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Choose the perfect membership package to match your fitness goals and lifestyle preferences.
+              </p>
+            </div>
+          )}
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <span className="ml-2 text-gray-600">Loading packages...</span>
@@ -169,10 +175,12 @@ const PackagesSection = () => {
     return (
       <section className="py-20 bg-gray-50" id="packages">
         <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
-              Membership <span className="text-primary">Packages</span>
-            </h2>
+          <div className="text-center">
+            {showHeader && (
+              <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
+                Membership <span className="text-primary">Packages</span>
+              </h2>
+            )}
             <p className="text-red-600 max-w-2xl mx-auto">
               Error loading packages: {error}
             </p>
@@ -188,14 +196,16 @@ const PackagesSection = () => {
   return (
     <section className="py-20 bg-gray-50" id="packages">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
-            Membership <span className="text-primary">Packages</span>
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect membership package to match your fitness goals and lifestyle preferences.
-          </p>
-        </div>
+        {showHeader && (
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">
+              Membership <span className="text-primary">Packages</span>
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Choose the perfect membership package to match your fitness goals and lifestyle preferences.
+            </p>
+          </div>
+        )}
         
         {packages.length === 0 ? (
           <div className="text-center py-12">
