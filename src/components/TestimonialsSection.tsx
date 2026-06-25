@@ -36,7 +36,7 @@ const TestimonialCard = ({ quote, name, role, image }: TestimonialProps) => (
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      quote: "The facilities at SereneFitness are exceptional, but what truly sets them apart is the attention to detail and personalized service. My fitness journey has transformed since joining.",
+      quote: "The facilities at ATL Fitness are exceptional, but what truly sets them apart is the attention to detail and personalized service. My fitness journey has transformed since joining.",
       name: "Emma Thompson",
       role: "Premium Member",
       image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1961"
@@ -61,7 +61,7 @@ const TestimonialsSection = () => {
         <div className="text-center mb-12 animate-on-scroll">
           <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">Member <span className="text-primary">Testimonials</span></h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Hear what our members have to say about their experience at SereneFitness.
+            Hear what our members have to say about their experience at ATL Fitness.
           </p>
         </div>
         

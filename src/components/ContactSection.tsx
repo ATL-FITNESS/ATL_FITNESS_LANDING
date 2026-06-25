@@ -64,7 +64,7 @@ const ContactSection = () => {
                     <Mail className="text-primary mt-1 mr-3" size={20} />
                     <div>
                       <h4 className="font-medium">Email</h4>
-                      <p className="text-gray-600">info@serenefitness.com</p>
+                      <p className="text-gray-600">info@atlfitness.com</p>
                     </div>
                   </div>
                   
