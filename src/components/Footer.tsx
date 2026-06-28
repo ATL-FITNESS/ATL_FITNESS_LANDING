@@ -2,6 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const googleMapsUrl = 'https://maps.app.goo.gl/UkS3aUpvKqTmoqAA6?g_st=com.google.maps.preview.copy';
+
 const Footer = () => {
   return (
     <footer className="bg-gray-50 pt-16 pb-8">
@@ -27,8 +29,7 @@ const Footer = () => {
               <li><Link to="/" className="text-gray-600 hover:text-primary transition-colors">Home</Link></li>
               <li><Link to="/about" className="text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
               <li><Link to="/packages" className="text-gray-600 hover:text-primary transition-colors">Memberships</Link></li>
-              <li><Link to="/team" className="text-gray-600 hover:text-primary transition-colors">Our Team</Link></li>
-              <li><Link to="/contact" className="text-gray-600 hover:text-primary transition-colors">Contact</Link></li>
+              <li><a href="/#contact" className="text-gray-600 hover:text-primary transition-colors">Contact</a></li>
             </ul>
           </div>
 
@@ -44,9 +45,30 @@ const Footer = () => {
           <div>
             <h4 className="font-medium text-lg mb-4">Contact</h4>
             <address className="not-italic text-gray-600 space-y-2">
-              <p>123 Peachtree Street</p>
-              <p>Atlanta, GA 30303</p>
-              <p>Phone: (404) 555-7890</p>
+              <p>CMC, Addis Ababa</p>
+              <p>Near Yamed Market</p>
+              <p>
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors"
+                >
+                  Open in Google Maps
+                </a>
+              </p>
+              <p>
+                Phone:{' '}
+                <a href="tel:+251991838485" className="hover:text-primary transition-colors">
+                  +251 991 838 485
+                </a>
+              </p>
+              <p>
+                Phone:{' '}
+                <a href="tel:+251991868788" className="hover:text-primary transition-colors">
+                  +251 991 868 788
+                </a>
+              </p>
               <p>Email: info@atlfitness.com</p>
             </address>
           </div>

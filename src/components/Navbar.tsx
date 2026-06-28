@@ -49,8 +49,7 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Packages', href: '/packages' },
-    { name: 'Team', href: '/team' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Contact', href: '/#contact' },
   ];
 
   return (
@@ -104,18 +103,19 @@ const Navbar = () => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
                 {navItems.map((item) => {
-                  const isActive = location.pathname === item.href;
+                  const isActive = item.href === '/' ? location.pathname === '/' : location.pathname === item.href;
+                  const isContactAnchor = item.href.includes('#');
                   return (
-                    <Link
+                    <a
                       key={item.name}
-                      to={item.href}
+                      href={item.href}
                       className={`text-gray-700 hover:text-primary transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded px-2 py-1 ${
                         isActive ? 'text-primary underline decoration-2' : ''
                       }`}
-                      aria-current={isActive ? 'page' : undefined}
+                      aria-current={isActive && !isContactAnchor ? 'page' : undefined}
                     >
                       {item.name}
-                    </Link>
+                    </a>
                   );
                 })}
                 
@@ -163,19 +163,20 @@ const Navbar = () => {
         <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
             {navItems.map((item) => {
-              const isActive = location.pathname === item.href;
+              const isActive = item.href === '/' ? location.pathname === '/' : location.pathname === item.href;
+              const isContactAnchor = item.href.includes('#');
               return (
-                <Link
+                <a
                   key={item.name}
-                  to={item.href}
+                  href={item.href}
                   className={`block px-3 py-2 text-gray-700 hover:text-primary transition-colors duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded ${
                     isActive ? 'text-primary bg-primary/5' : ''
                   }`}
                   onClick={() => setIsOpen(false)}
-                  aria-current={isActive ? 'page' : undefined}
+                  aria-current={isActive && !isContactAnchor ? 'page' : undefined}
                 >
                   {item.name}
-                </Link>
+                </a>
               );
             })}
             

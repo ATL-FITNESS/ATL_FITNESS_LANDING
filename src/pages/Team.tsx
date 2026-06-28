@@ -153,7 +153,7 @@ const Team = () => {
             <p className="text-gray-600 max-w-2xl mx-auto">
               We're always looking for talented fitness professionals to join our team. If you're passionate about helping others achieve their fitness goals and have the credentials to match, we'd love to hear from you.
             </p>
-            <a href="/contact" className="inline-block mt-6 text-primary font-medium hover:underline">Submit your application</a>
+            <a href="/#contact" className="inline-block mt-6 text-primary font-medium hover:underline">Submit your application</a>
           </div>
         </div>
       </section>

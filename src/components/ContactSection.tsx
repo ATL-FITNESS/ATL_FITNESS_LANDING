@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 
+const googleMapsUrl = 'https://maps.app.goo.gl/UkS3aUpvKqTmoqAA6?g_st=com.google.maps.preview.copy';
+
 const ContactSection = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,7 +17,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-50" id="contact">
+    <section className="py-20 bg-gray-50 scroll-mt-24" id="contact">
       <div className="container mx-auto">
         <div className="text-center mb-12 animate-on-scroll">
           <h2 className="text-3xl md:text-4xl font-playfair font-semibold mb-4">Get in <span className="text-primary">Touch</span></h2>
@@ -28,7 +30,7 @@ const ContactSection = () => {
           <Card className="shadow-md rounded-2xl overflow-hidden">
             <CardContent className="p-0">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215280353985!2d-73.98780882426832!3d40.75797657138708!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1691449418702!5m2!1sen!2sus" 
+                src="https://www.google.com/maps?q=2VG3%2BC62%20Yamed%20Market%20%7C%20Bakery%20%26%20Pastry%20%7C%20CMC%2C%20Addis%20Ababa&output=embed" 
                 width="100%" 
                 height="300" 
                 style={{ border: 0 }} 
@@ -46,9 +48,17 @@ const ContactSection = () => {
                     <div>
                       <h4 className="font-medium">Address</h4>
                       <address className="not-italic text-gray-600">
-                        123 Fitness Avenue<br />
-                        New York, NY 10001
+                        CMC, Addis Ababa<br />
+                        Near Yamed Market
                       </address>
+                      <a
+                        href={googleMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-block text-sm font-medium text-primary hover:underline"
+                      >
+                        Open in Google Maps
+                      </a>
                     </div>
                   </div>
                   
@@ -56,7 +66,18 @@ const ContactSection = () => {
                     <Phone className="text-primary mt-1 mr-3" size={20} />
                     <div>
                       <h4 className="font-medium">Phone</h4>
-                      <p className="text-gray-600">(123) 456-7890</p>
+                      <div className="space-y-1 text-gray-600">
+                        <p>
+                          <a href="tel:+251991838485" className="hover:text-primary transition-colors">
+                            +251 991 838 485
+                          </a>
+                        </p>
+                        <p>
+                          <a href="tel:+251991868788" className="hover:text-primary transition-colors">
+                            +251 991 868 788
+                          </a>
+                        </p>
+                      </div>
                     </div>
                   </div>
                   

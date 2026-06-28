@@ -10,10 +10,10 @@ const Hero = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: "url('https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=2070')",
+          backgroundImage: "url('/lovable-uploads/hero-atl-background.png')",
         }}
       >
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
       </div>
       
       {/* Content */}
@@ -30,11 +30,11 @@ const Hero = () => {
               Join Now
             </Button>
           </Link>
-          <Link to="/contact">
+          <a href="/#contact">
             <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-base  text-gray-800 hover:bg-white/65">
               Contact Us
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
       
