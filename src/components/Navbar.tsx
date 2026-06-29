@@ -72,7 +72,7 @@ const Navbar = () => {
             </Link>
             <TextType 
               className='text-lg text-font-primary md:text-2xl font-bold text-gray-700 ml-1 md:ml-1.5'
-              text={["ATL GYM & FITNESS CENTER"]}
+              text={["ATL FITNESS"]}
               typingSpeed={65}
               pauseDuration={1500}
               showCursor={false}
