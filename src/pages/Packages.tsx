@@ -4,7 +4,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimationObserver from '@/components/AnimationObserver';
 import PackagesSection from '@/components/PackagesSection';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Packages = () => {
@@ -27,18 +26,6 @@ const Packages = () => {
       
       {/* Packages loaded from Supabase */}
       <PackagesSection showHeader={false} />
-
-      <section className="pb-20 bg-gray-50">
-        <div className="container mx-auto">
-          <div className="text-center animate-on-scroll">
-            <h3 className="text-2xl font-playfair font-semibold mb-4">Custom Corporate Packages</h3>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-              We offer customized corporate wellness programs designed to boost employee wellbeing and productivity. Contact us for a tailored solution for your organization.
-            </p>
-            <Button variant="outline" className="rounded-full px-8">Contact for Corporate Rates</Button>
-          </div>
-        </div>
-      </section>
       
       {/* Additional Benefits */}
       <section className="py-20 bg-gray-50">

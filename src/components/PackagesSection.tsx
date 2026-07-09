@@ -1,16 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { 
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle 
 } from '@/components/ui/card';
 import { Check, Loader2 } from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+
+const LANDING_PAGE_GYM_ID = '8ff05a6e-615b-437a-a4e5-89cc43206ee3';
 
 // Database types
 type DurationUnit = 'day' | 'week' | 'month' | 'year'
@@ -18,6 +20,7 @@ type AccessLevelType = 'off_peak_hours' | 'peak_hours' | 'full_access'
 
 interface Package {
   id: string
+  gym_id: string
   name: string
   price: number
   duration_value: number
@@ -48,10 +51,15 @@ const getAccessLevelDescription = (accessLevel: AccessLevelType): string => {
   }
 };
 
+const formatDuration = (value: number, unit: DurationUnit | string): string => {
+  const singularUnit = unit.endsWith('s') ? unit.slice(0, -1) : unit;
+  return `${value} ${value === 1 ? singularUnit : `${singularUnit}s`}`;
+};
+
 const getFeatures = (pkg: Package): string[] => {
   const features = [
     getAccessLevelDescription(pkg.access_level),
-    `Duration: ${pkg.duration_value} ${pkg.duration_value === 1 ? pkg.duration_unit : pkg.duration_unit + 's'}`,
+    `Duration: ${formatDuration(pkg.duration_value, pkg.duration_unit)}`,
   ];
 
   if (pkg.requires_trainer) {
@@ -69,7 +77,7 @@ const getFeatures = (pkg: Package): string[] => {
 
 const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
   const features = getFeatures(pkg);
-  const durationText = pkg.duration_value === 1 ? pkg.duration_unit : `${pkg.duration_value} ${pkg.duration_unit}s`;
+  const durationText = formatDuration(pkg.duration_value, pkg.duration_unit);
 
   return (
     <Card className={`relative rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${popular ? 'border-primary border-2' : ''}`}>
@@ -100,18 +108,21 @@ const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
           ))}
         </ul>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full rounded-full hover:bg-primary/90">Select Package</Button>
-      </CardFooter>
     </Card>
   );
 };
 
 interface PackagesSectionProps {
   showHeader?: boolean;
+  previewLimit?: number;
+  showViewAllLink?: boolean;
 }
 
-const PackagesSection = ({ showHeader = true }: PackagesSectionProps) => {
+const PackagesSection = ({
+  showHeader = true,
+  previewLimit,
+  showViewAllLink = false,
+}: PackagesSectionProps) => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -126,11 +137,18 @@ const PackagesSection = ({ showHeader = true }: PackagesSectionProps) => {
           throw new Error('Supabase configuration is missing. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment variables.');
         }
 
-        const { data, error } = await supabase
+        let query = supabase
           .from('packages')
           .select('*')
+          .eq('gym_id', LANDING_PAGE_GYM_ID)
           .eq('archived', false)
           .order('price', { ascending: false });
+
+        if (previewLimit) {
+          query = query.limit(previewLimit);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           throw new Error(`Database error: ${error.message}`);
@@ -146,7 +164,7 @@ const PackagesSection = ({ showHeader = true }: PackagesSectionProps) => {
     };
 
     fetchPackages();
-  }, []);
+  }, [previewLimit]);
 
   if (loading) {
     return (
@@ -212,15 +230,27 @@ const PackagesSection = ({ showHeader = true }: PackagesSectionProps) => {
             <p className="text-gray-600">No packages available at the moment.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg, index) => (
-              <PackageCard 
-                key={pkg.id} 
-                package={pkg} 
-                popular={index === popularPackageIndex}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {packages.map((pkg, index) => (
+                <PackageCard
+                  key={pkg.id}
+                  package={pkg}
+                  popular={index === popularPackageIndex}
+                />
+              ))}
+            </div>
+
+            {showViewAllLink && (
+              <div className="mt-10 text-center">
+                <Link to="/packages">
+                  <Button variant="outline" className="rounded-full px-8">
+                    View All Packages
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

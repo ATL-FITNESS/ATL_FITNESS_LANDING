@@ -17,7 +17,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <AboutSection />
-      <PackagesSection />
+      <PackagesSection previewLimit={3} showViewAllLink />
       <OurGymSection />
       <TestimonialsSection />
       <ContactSection />
