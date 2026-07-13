@@ -13,6 +13,9 @@ import { Check, Loader2 } from 'lucide-react';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 const LANDING_PAGE_GYM_ID = '8ff05a6e-615b-437a-a4e5-89cc43206ee3';
+const LANDING_DURATION_TARGETS_MONTHS = [1, 6, 12];
+const DURATION_SCORE_WEIGHT = 0.7;
+const PRICE_SCORE_WEIGHT = 0.3;
 
 // Database types
 type DurationUnit = 'day' | 'week' | 'month' | 'year'
@@ -35,7 +38,7 @@ interface Package {
 
 interface PackageCardProps {
   package: Package;
-  popular?: boolean;
+  badge?: string;
 }
 
 const getAccessLevelDescription = (accessLevel: AccessLevelType): string => {
@@ -54,6 +57,76 @@ const getAccessLevelDescription = (accessLevel: AccessLevelType): string => {
 const formatDuration = (value: number, unit: DurationUnit | string): string => {
   const singularUnit = unit.endsWith('s') ? unit.slice(0, -1) : unit;
   return `${value} ${value === 1 ? singularUnit : `${singularUnit}s`}`;
+};
+
+const getDurationInMonths = (pkg: Package): number => {
+  switch (pkg.duration_unit) {
+    case 'day':
+      return pkg.duration_value / 30.4375;
+    case 'week':
+      return (pkg.duration_value * 7) / 30.4375;
+    case 'year':
+      return pkg.duration_value * 12;
+    case 'month':
+    default:
+      return pkg.duration_value;
+  }
+};
+
+const selectRepresentativePackages = (packages: Package[], limit: number): Package[] => {
+  if (limit <= 0 || packages.length === 0) {
+    return [];
+  }
+
+  // Keep the lowest-priced package for each duration as the standard candidate.
+  const representativesByDuration = new Map<string, Package>();
+
+  packages.forEach((pkg) => {
+    const durationKey = getDurationInMonths(pkg).toFixed(4);
+    const currentRepresentative = representativesByDuration.get(durationKey);
+
+    if (!currentRepresentative || pkg.price < currentRepresentative.price) {
+      representativesByDuration.set(durationKey, pkg);
+    }
+  });
+
+  const candidates = Array.from(representativesByDuration.values());
+  const prices = candidates.map((pkg) => pkg.price);
+  const minPrice = Math.min(...prices);
+  const priceRange = Math.max(Math.max(...prices) - minPrice, 1);
+  const selected: Package[] = [];
+  const selectedIds = new Set<string>();
+
+  LANDING_DURATION_TARGETS_MONTHS.forEach((targetMonths) => {
+    if (selected.length >= limit) {
+      return;
+    }
+
+    const availableCandidates = candidates.filter((pkg) => !selectedIds.has(pkg.id));
+    if (availableCandidates.length === 0) {
+      return;
+    }
+
+    const maxDurationDistance = Math.max(
+      ...availableCandidates.map((pkg) => Math.abs(getDurationInMonths(pkg) - targetMonths)),
+      1,
+    );
+
+    const bestMatch = availableCandidates.reduce((best, candidate) => {
+      const getScore = (pkg: Package) => {
+        const durationScore = Math.abs(getDurationInMonths(pkg) - targetMonths) / maxDurationDistance;
+        const priceScore = (pkg.price - minPrice) / priceRange;
+        return (durationScore * DURATION_SCORE_WEIGHT) + (priceScore * PRICE_SCORE_WEIGHT);
+      };
+
+      return getScore(candidate) < getScore(best) ? candidate : best;
+    });
+
+    selected.push(bestMatch);
+    selectedIds.add(bestMatch.id);
+  });
+
+  return selected.sort((a, b) => getDurationInMonths(a) - getDurationInMonths(b));
 };
 
 const getFeatures = (pkg: Package): string[] => {
@@ -75,14 +148,14 @@ const getFeatures = (pkg: Package): string[] => {
   return features;
 };
 
-const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
+const PackageCard = ({ package: pkg, badge }: PackageCardProps) => {
   const features = getFeatures(pkg);
 
   return (
-    <Card className={`relative rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${popular ? 'border-primary border-2' : ''}`}>
-      {popular && (
+    <Card className={`relative rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${badge ? 'border-primary border-2' : ''}`}>
+      {badge && (
         <div className="absolute top-0 right-0 bg-primary text-white text-xs font-medium px-3 py-1 rounded-bl-lg">
-          MOST POPULAR
+          {badge}
         </div>
       )}
       <CardHeader className="text-center pb-2">
@@ -138,10 +211,6 @@ const PackagesSection = ({
           .eq('gym_id', LANDING_PAGE_GYM_ID)
           .eq('archived', false)
           .order('price', { ascending: false });
-
-        if (previewLimit) {
-          query = query.limit(previewLimit);
-        }
 
         const { data, error } = await query;
 
@@ -203,8 +272,17 @@ const PackagesSection = ({
     );
   }
 
-  // Mark the most expensive package as popular (best package)
-  const popularPackageIndex = 0; // Since we order by price descending, index 0 is the most expensive
+  const displayedPackages = previewLimit
+    ? selectRepresentativePackages(packages, previewLimit)
+    : packages;
+
+  const recommendedPackageId = previewLimit && displayedPackages.length > 0
+    ? displayedPackages.reduce((closest, pkg) => (
+        Math.abs(getDurationInMonths(pkg) - 6) < Math.abs(getDurationInMonths(closest) - 6)
+          ? pkg
+          : closest
+      )).id
+    : null;
 
   return (
     <section className="py-20 bg-gray-50" id="packages">
@@ -227,11 +305,11 @@ const PackagesSection = ({
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {packages.map((pkg, index) => (
+              {displayedPackages.map((pkg) => (
                 <PackageCard
                   key={pkg.id}
                   package={pkg}
-                  popular={index === popularPackageIndex}
+                  badge={pkg.id === recommendedPackageId ? 'RECOMMENDED' : undefined}
                 />
               ))}
             </div>
