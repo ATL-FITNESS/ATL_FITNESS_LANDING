@@ -77,7 +77,6 @@ const getFeatures = (pkg: Package): string[] => {
 
 const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
   const features = getFeatures(pkg);
-  const durationText = formatDuration(pkg.duration_value, pkg.duration_unit);
 
   return (
     <Card className={`relative rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg ${popular ? 'border-primary border-2' : ''}`}>
@@ -93,10 +92,6 @@ const PackageCard = ({ package: pkg, popular }: PackageCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center pb-6">
-        <div className="mb-6">
-          <span className="text-4xl font-semibold">{pkg.price} ETB</span>
-          <span className="text-gray-500 ml-2">/ {durationText}</span>
-        </div>
         <ul className="space-y-3 text-left">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
