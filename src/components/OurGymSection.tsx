@@ -10,37 +10,37 @@ import {
 
 const gymImages = [
   {
-    src: '/lovable-uploads/gym-brand-screen.jpg',
+    src: '/lovable-uploads/gym-brand-screen.webp',
     alt: 'ATL Fitness branded cardio and training area',
     title: 'Signature Training Space',
   },
   {
-    src: '/lovable-uploads/gym-training-floor-wide.jpg',
+    src: '/lovable-uploads/gym-training-floor-wide.webp',
     alt: 'ATL Fitness open strength training floor',
     title: 'Open Strength Floor',
   },
   {
-    src: '/lovable-uploads/gym-main-floor.jpg',
+    src: '/lovable-uploads/gym-main-floor.webp',
     alt: 'ATL Fitness main gym floor with strength machines',
     title: 'Main Gym Floor',
   },
   {
-    src: '/lovable-uploads/gym-strength-lane.jpg',
+    src: '/lovable-uploads/gym-strength-lane.webp',
     alt: 'ATL Fitness strength machines and training lane',
     title: 'Strength Training Lane',
   },
   {
-    src: '/lovable-uploads/gym-free-weights-wall.jpg',
+    src: '/lovable-uploads/gym-free-weights-wall.webp',
     alt: 'ATL Fitness free weights area with dumbbells',
     title: 'Free Weights Zone',
   },
   {
-    src: '/lovable-uploads/gym-dumbbell-zone.jpg',
+    src: '/lovable-uploads/gym-dumbbell-zone.webp',
     alt: 'ATL Fitness dumbbell and bench training zone',
     title: 'Dumbbell Zone',
   },
   {
-    src: '/lovable-uploads/gym-cardio-row.jpg',
+    src: '/lovable-uploads/gym-cardio-row.webp',
     alt: 'ATL Fitness treadmill cardio row',
     title: 'Cardio Row',
   },

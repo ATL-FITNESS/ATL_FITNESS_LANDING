@@ -6,27 +6,27 @@ import AnimationObserver from '@/components/AnimationObserver';
 
 const facilityImages = [
   {
-    src: '/lovable-uploads/gym-main-floor.jpg',
+    src: '/lovable-uploads/gym-main-floor.webp',
     alt: 'ATL Fitness main strength floor',
   },
   {
-    src: '/lovable-uploads/gym-cardio-row.jpg',
+    src: '/lovable-uploads/gym-cardio-row.webp',
     alt: 'ATL Fitness cardio treadmills',
   },
   {
-    src: '/lovable-uploads/gym-free-weights-wall.jpg',
+    src: '/lovable-uploads/gym-free-weights-wall.webp',
     alt: 'ATL Fitness free weights area',
   },
   {
-    src: '/lovable-uploads/gym-dumbbell-zone.jpg',
+    src: '/lovable-uploads/gym-dumbbell-zone.webp',
     alt: 'ATL Fitness dumbbell zone',
   },
   {
-    src: '/lovable-uploads/gym-training-floor-wide.jpg',
+    src: '/lovable-uploads/gym-training-floor-wide.webp',
     alt: 'ATL Fitness open training floor',
   },
   {
-    src: '/lovable-uploads/gym-brand-screen.jpg',
+    src: '/lovable-uploads/gym-brand-screen.webp',
     alt: 'ATL Fitness branded training area',
   },
 ];
@@ -68,7 +68,7 @@ const About = () => {
             
             <div className="rounded-2xl overflow-hidden shadow-md animate-on-scroll">
               <img 
-                src="/lovable-uploads/gym-training-floor-wide.jpg" 
+                src="/lovable-uploads/gym-training-floor-wide.webp"
                 alt="ATL Fitness training floor" 
                 className="w-full h-full object-cover aspect-[4/3]"
               />
@@ -83,9 +83,10 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 rounded-2xl overflow-hidden shadow-md animate-on-scroll">
               <img 
-                src="/lovable-uploads/gym-dumbbell-zone.jpg" 
+                src="/lovable-uploads/gym-dumbbell-zone.webp"
                 alt="ATL Fitness dumbbell and strength area" 
                 className="w-full h-full object-cover aspect-[4/3]"
+                loading="lazy"
               />
             </div>
             

@@ -40,30 +40,34 @@ const AboutSection = () => {
           <div className="grid grid-cols-2 gap-4 animate-on-scroll">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-md">
               <img 
-                src="/lovable-uploads/about-strength-floor.png" 
+                src="/lovable-uploads/about-strength-floor.webp"
                 alt="ATL Fitness strength training floor" 
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-md mt-8">
               <img 
-                src="/lovable-uploads/about-cycle-studio.png" 
+                src="/lovable-uploads/about-cycle-studio.webp"
                 alt="ATL Fitness cycling studio" 
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-md">
               <img 
-                src="/lovable-uploads/about-free-weights.png" 
+                src="/lovable-uploads/about-free-weights.webp"
                 alt="ATL Fitness free weights area" 
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-md mt-8">
               <img 
-                src="/lovable-uploads/about-training-floor.png" 
+                src="/lovable-uploads/about-training-floor.webp"
                 alt="ATL Fitness training floor" 
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
             </div>
           </div>

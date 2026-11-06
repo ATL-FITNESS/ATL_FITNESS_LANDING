@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SocialLinks from './SocialLinks';
 
 const googleMapsUrl = 'https://maps.app.goo.gl/UkS3aUpvKqTmoqAA6?g_st=com.google.maps.preview.copy';
 
@@ -12,7 +13,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center mb-4">
               <img 
-                src="/public/lovable-uploads/1104d1e0-24f1-4ef4-b2dc-e75de2c093e5.png" 
+                src="/lovable-uploads/atl-logo.png"
                 alt="ATL Fitness Logo" 
                 className="h-10 mr-2" 
               />
@@ -21,6 +22,7 @@ const Footer = () => {
             <p className="text-gray-600 mb-4">
               Elevate your fitness journey in a premium environment designed for results and well-being.
             </p>
+            <SocialLinks />
           </div>
 
           <div>

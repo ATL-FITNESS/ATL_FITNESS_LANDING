@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import SocialLinks from './SocialLinks';
 
 const googleMapsUrl = 'https://maps.app.goo.gl/UkS3aUpvKqTmoqAA6?g_st=com.google.maps.preview.copy';
 
@@ -97,6 +98,10 @@ const ContactSection = () => {
                       <p className="text-gray-600">Sat: 6:00 AM - 10:00 PM</p>
                       <p className="text-gray-600">Sun: 7:00 AM - 9:00 PM</p>
                     </div>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">Follow Us</h4>
+                    <SocialLinks />
                   </div>
                 </div>
               </div>
